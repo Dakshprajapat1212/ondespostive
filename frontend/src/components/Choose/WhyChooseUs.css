@@ -1,0 +1,359 @@
+.travel-section {
+  width: 100%;
+  background: #ffffff;
+  padding: 60px 5%;
+  box-sizing: border-box;
+}
+
+
+/* ================= WHY CHOOSE US ================= */
+
+.why-section {
+  text-align: center;
+  max-width: 1450px;
+  margin: auto;
+}
+
+.small-heading {
+  color: #f7256f;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 0 0 10px;
+  text-transform: uppercase;
+}
+
+.main-heading {
+  margin: 0 0 40px;
+  color: #10172b;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 42px;
+  font-weight: 500;
+}
+
+.main-heading span {
+  color: #10172b;
+}
+
+
+/* ================= FEATURE CARDS ================= */
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 28px;
+}
+
+.feature-card {
+  min-height: 220px;
+  padding: 25px 20px;
+  background: #ffffff;
+  border-radius: 10px;
+
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.07);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  transition: 0.3s ease;
+  box-sizing: border-box;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+
+  box-shadow:
+    0 14px 35px rgba(0, 0, 0, 0.10);
+}
+
+
+.feature-icon {
+  width: 55px;
+  height: 55px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #f7256f;
+  font-size: 38px;
+
+  margin-bottom: 15px;
+}
+
+
+.feature-card h3 {
+  margin: 0 0 12px;
+
+  color: #10172b;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+
+.feature-card p {
+  margin: 0;
+
+  color: #5f6470;
+
+  font-size: 14px;
+  line-height: 1.55;
+
+  max-width: 180px;
+}
+
+
+/* ================= VEHICLE SECTION ================= */
+
+.vehicle-section {
+  max-width: 1450px;
+  margin: 85px auto 0;
+}
+
+
+.vehicle-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  margin-bottom: 30px;
+}
+
+
+.vehicle-heading {
+  margin: 0;
+
+  color: #10172b;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 40px;
+  font-weight: 500;
+}
+
+
+/* ================= VIEW BUTTON ================= */
+
+.view-btn {
+  min-width: 205px;
+  height: 58px;
+
+  padding: 0 25px;
+
+  background: #ffffff;
+
+  border: 2px solid #f7256f;
+  border-radius: 5px;
+
+  color: #f7256f;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+
+  transition: 0.3s ease;
+}
+
+
+.view-btn span {
+  font-size: 24px;
+  line-height: 1;
+}
+
+
+.view-btn:hover {
+  background: #f7256f;
+  color: #ffffff;
+}
+
+
+/* ================= VEHICLES ================= */
+
+.vehicle-grid {
+  display: grid;
+
+  grid-template-columns: repeat(6, 1fr);
+
+  gap: 18px;
+
+  align-items: start;
+}
+
+
+.vehicle-card {
+  text-align: center;
+  color: inherit;
+  text-decoration: none;
+
+  min-width: 0;
+
+  transition: 0.3s ease;
+}
+
+
+.vehicle-card:hover {
+  transform: translateY(-5px);
+}
+
+
+.vehicle-image {
+  width: 100%;
+  height: 145px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+
+.vehicle-image img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  display: block;
+
+  transition: 0.3s ease;
+}
+
+
+.vehicle-card:hover img {
+  transform: scale(1.05);
+}
+
+
+.vehicle-card h3 {
+  margin: 12px 0 0;
+
+  color: #292d38;
+
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+
+/* ================= TABLET ================= */
+
+@media (max-width: 1100px) {
+
+  .feature-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .vehicle-grid {
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 35px;
+  }
+
+  .vehicle-image {
+    height: 170px;
+  }
+
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px) {
+
+  .travel-section {
+    padding: 45px 20px;
+  }
+
+  .main-heading {
+    font-size: 32px;
+    margin-bottom: 30px;
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .feature-card {
+    min-height: 200px;
+    padding: 20px 12px;
+  }
+
+  .feature-card h3 {
+    font-size: 15px;
+  }
+
+  .feature-card p {
+    font-size: 13px;
+  }
+
+  .vehicle-section {
+    margin-top: 60px;
+  }
+
+  .vehicle-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .vehicle-heading {
+    font-size: 30px;
+  }
+
+  .view-btn {
+    height: 50px;
+    min-width: 180px;
+  }
+
+  .vehicle-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px 12px;
+  }
+
+  .vehicle-image {
+    height: 120px;
+  }
+
+  .vehicle-card h3 {
+    font-size: 13px;
+    white-space: normal;
+  }
+
+}
+
+
+/* ================= SMALL MOBILE ================= */
+
+@media (max-width: 480px) {
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card {
+    min-height: auto;
+    padding: 25px;
+  }
+
+  .vehicle-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vehicle-image {
+    height: 170px;
+  }
+
+}

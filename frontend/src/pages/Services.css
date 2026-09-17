@@ -1,0 +1,17 @@
+.services-page { max-width: 1180px; margin: auto; padding: 58px 24px 76px; }
+.services-page .page-heading { max-width: 620px; margin-bottom: 32px; animation: detail-reveal .5s ease both; }
+.services-page .page-heading span { color: #f50057; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.services-page .page-heading h1 { color: #15223a; font: 500 clamp(34px, 5vw, 58px)/1.08 Georgia, serif; margin: 10px 0 14px; }
+.services-page .page-heading p { color: #687080; font-size: 16px; }
+.services-page .vehicle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.services-page .vehicle-card { color: inherit; text-decoration: none; border: 1px solid #ececf0; border-radius: 7px; overflow: hidden; background: white; box-shadow: 0 8px 22px rgba(21,34,58,.08); transition: transform .25s ease, box-shadow .25s ease; }
+.services-page .vehicle-card:hover { color: inherit; transform: translateY(-6px); box-shadow: 0 16px 32px rgba(21,34,58,.14); }
+.services-page .vehicle-card img { width: 100%; height: 180px; object-fit: contain; display: block; background: #f7f7f7; }
+.services-page .vehicle-card div { padding: 18px; }
+.services-page .vehicle-card span { color: #f50057; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; }
+.services-page .vehicle-card h2 { color: #15223a; font: 500 25px Georgia, serif; margin: 7px 0; }
+.services-page .vehicle-card p { color: #687080; margin: 0 0 15px; }
+.services-page .vehicle-card b { color: #f50057; font-size: 12px; }
+@media (max-width: 800px) { .services-page .vehicle-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .services-page { padding: 40px 18px 55px; } .services-page .vehicle-grid { grid-template-columns: 1fr; } }
+@media (min-width: 1400px) { .services-page .vehicle-card img { height: 220px; } }

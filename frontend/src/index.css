@@ -1,0 +1,28 @@
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body { margin: 0; color: #15223a; overflow-x: hidden; }
+
+img { max-width: 100%; }
+
+a { overflow-wrap: anywhere; }
+
+@media (min-width: 1600px) {
+	.hero-container, .destination-section, .detail-page, .services-page { max-width: 1400px; }
+}
+
+@media (max-width: 360px) {
+	.destination-section { padding-left: 12px; padding-right: 12px; }
+	.destination-grid { gap: 8px; }
+	.destination-image { height: 105px; }
+	.destination-content { padding: 10px 8px 8px; }
+	.destination-content h3 { font-size: 13px; }
+	.destination-subtitle, .destination-duration { font-size: 9px; }
+	.package-content h3 { font-size: 14px; }
+	.package-info span { font-size: 9px; }
+}
+
+.enquiry-page .hero-section { min-height: auto; margin: 0; }
+.enquiry-page .hero-container { padding-bottom: 40px; }
+.enquiry-page .features-bar { display: none; }
