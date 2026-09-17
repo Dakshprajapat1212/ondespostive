@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Hero.css";
 import heroImage from "../../assets/Hero.jpeg"; // apni image yaha laga dena
+import { API_BASE } from "../../config/api";
 
 function Hero({ initialTour = "" }) {
   const [formData, setFormData] = useState({
@@ -98,7 +99,7 @@ function Hero({ initialTour = "" }) {
     setSubmitted(false);
 
     try {
-      const response = await fetch("/api/enquiries", {
+      const response = await fetch(`${API_BASE}/api/enquiries`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

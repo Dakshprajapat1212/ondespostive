@@ -1,4 +1,5 @@
 import "./PopularDestinations.css";
+import { API_BASE } from "../../config/api";
 import delhi from "../../assets/Delhi.png";
 import udaipur from "../../assets/Udaipur.png";
 import jaisalmer from "../../assets/Jaisalmer.png";
@@ -38,7 +39,7 @@ function PopularDestinations() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/content")
+    fetch(`${API_BASE}/api/content`)
       .then((response) => {
         if (!response.ok) throw new Error("Content could not be loaded");
         return response.json();
