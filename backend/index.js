@@ -26,17 +26,18 @@ const packages = [
   { name: "Desert Safari Tour", places: "Jaisalmer - Bikaner - Camel Safari", duration: "6 Days / 5 Nights", feature: "Adventure", imageKey: "desertSafari" },
 ];
 
+const smtpUser = process.env.SMTP_USER || "Ondespositiveindiavacation.in@gmail.com";
+const smtpPass = (process.env.SMTP_PASS || "qrlgppjhwvfpzsvz").replace(/\s+/g, "");
+const adminEmail = process.env.ADMIN_EMAIL || "Ondespositiveindiavacation.in@gmail.com";
+
 const mailTransporter = nodemailer.createTransport({
   service: "gmail",
-  host: process.env.SMTP_HOST || "smtp.gmail.com",
-  port: Number(process.env.SMTP_PORT || 465),
-  secure: process.env.SMTP_SECURE !== "false",
   connectionTimeout: 10000,
   greetingTimeout: 10000,
   socketTimeout: 15000,
   auth: {
-    user: process.env.SMTP_USER,
-    pass: (process.env.SMTP_PASS || "").replace(/\s+/g, ""),
+    user: smtpUser,
+    pass: smtpPass,
   },
 });
 
@@ -66,25 +67,25 @@ app.post("/api/enquiries", async (req, res) => {
     ].join("\n");
 
     await mailTransporter.sendMail({
-      from: process.env.SMTP_USER,
-      to: process.env.ADMIN_EMAIL || "Ondespositiveindiavacation.in@gmail.com",
+      from: `"Ondes Positive India Vacation" <${smtpUser}>`,
+      to: adminEmail,
       replyTo: email.trim(),
       subject: `New tour enquiry from ${name.trim()}`,
       text: enquiryDetails,
     });
 
     await mailTransporter.sendMail({
-      from: process.env.SMTP_USER,
+      from: `"Ondes Positive India Vacation" <${smtpUser}>`,
       to: email.trim(),
-      replyTo: process.env.ADMIN_EMAIL || "Ondespositiveindiavacation.in@gmail.com",
+      replyTo: adminEmail,
       subject: "We received your India vacation enquiry",
       text: `Hello ${name.trim()},\n\nThank you for contacting Ondes Positive India Vacation. We received your enquiry with these details:\n\n${enquiryDetails}\n\nOur travel team will contact you shortly.`,
     });
 
     return res.status(201).json({ message: "Enquiry sent successfully." });
   } catch (error) {
-    console.error("Enquiry processing failed:", error.message);
-    return res.status(500).json({ message: "Unable to process enquiry right now." });
+    console.error("Enquiry processing failed:", error);
+    return res.status(500).json({ message: "Unable to process enquiry right now.", error: error.message });
   }
 });
 
