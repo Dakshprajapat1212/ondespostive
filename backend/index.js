@@ -29,23 +29,53 @@ const packages = [
   { name: "Desert Safari Tour", places: "Jaisalmer - Bikaner - Camel Safari", duration: "6 Days / 5 Nights", feature: "Adventure", imageKey: "desertSafari" },
 ];
 
+const adminEmail = process.env.ADMIN_EMAIL || "Ondespositiveindiavacation.in@gmail.com";
+const senderEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
 const smtpUser = process.env.SMTP_USER || "Ondespositiveindiavacation.in@gmail.com";
 const smtpPass = (process.env.SMTP_PASS || "qrlgppjhwvfpzsvz").replace(/\s+/g, "");
-const adminEmail = process.env.ADMIN_EMAIL || "Ondespositiveindiavacation.in@gmail.com";
 
-const mailTransporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  family: 4,
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 15000,
+const smtpTransporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || "smtp.gmail.com",
+  port: Number(process.env.SMTP_PORT || 465),
+  secure: process.env.SMTP_SECURE !== "false",
   auth: {
     user: smtpUser,
     pass: smtpPass,
   },
 });
+
+async function sendEmail({ to, replyTo, subject, text }) {
+  if (!process.env.RESEND_API_KEY) {
+    await smtpTransporter.sendMail({
+      from: `"Ondes Positive India Vacation" <${smtpUser}>`,
+      to,
+      replyTo,
+      subject,
+      text,
+    });
+    return;
+  }
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: senderEmail,
+      to: [to],
+      reply_to: replyTo,
+      subject,
+      text,
+    }),
+  });
+
+  if (!response.ok) {
+    const details = await response.text();
+    throw new Error(`Email provider rejected the request (${response.status}): ${details}`);
+  }
+}
 
 app.get("/", (req, res) => {
   res.send("Ondes Positive India Vacation API is running...");
@@ -72,16 +102,14 @@ app.post("/api/enquiries", async (req, res) => {
       `Travellers: ${travelers}`,
     ].join("\n");
 
-    await mailTransporter.sendMail({
-      from: `"Ondes Positive India Vacation" <${smtpUser}>`,
+    await sendEmail({
       to: adminEmail,
       replyTo: email.trim(),
       subject: `New tour enquiry from ${name.trim()}`,
       text: enquiryDetails,
     });
 
-    await mailTransporter.sendMail({
-      from: `"Ondes Positive India Vacation" <${smtpUser}>`,
+    await sendEmail({
       to: email.trim(),
       replyTo: adminEmail,
       subject: "We received your India vacation enquiry",
@@ -90,8 +118,8 @@ app.post("/api/enquiries", async (req, res) => {
 
     return res.status(201).json({ message: "Enquiry sent successfully." });
   } catch (error) {
-    console.error("Enquiry processing failed:", error);
-    return res.status(500).json({ message: "Unable to process enquiry right now.", error: error.message });
+    console.error("Enquiry processing failed:", error.message);
+    return res.status(500).json({ message: "Unable to process enquiry right now." });
   }
 });
 

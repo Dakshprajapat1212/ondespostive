@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Hero.css";
 import heroImage from "../../assets/Hero.jpeg"; // apni image yaha laga dena
-import { API_BASE } from "../../config/api";
+import { getImageUrl } from "../../utils/imageDelivery";
+
+const API_BASE_URL = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 
 function Hero({ initialTour = "" }) {
   const [formData, setFormData] = useState({
@@ -40,10 +42,10 @@ function Hero({ initialTour = "" }) {
     // Name
     if (!formData.name.trim()) {
       newErrors.name = "Please enter your name";
-    } else if (formData.name.trim().length < 3) {
-      newErrors.name = "Name must be at least 3 characters";
-    } else if (!/^[A-Za-z\s]+$/.test(formData.name.trim())) {
-      newErrors.name = "Name can contain letters only";
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters";
+    } else if (!/^[A-Za-z\u00C0-\u024F\s'-]+$/.test(formData.name.trim())) {
+      newErrors.name = "Please enter a valid name";
     }
 
     // Email
@@ -51,7 +53,7 @@ function Hero({ initialTour = "" }) {
       newErrors.email = "Please enter your email";
     } else if (
       !/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(
-        formData.email
+        formData.email.trim()
       )
     ) {
       newErrors.email = "Please enter a valid email address";
@@ -60,8 +62,8 @@ function Hero({ initialTour = "" }) {
     // Phone
     if (!formData.phone.trim()) {
       newErrors.phone = "Please enter your phone number";
-    } else if (!/^[6-9]\d{9}$/.test(formData.phone)) {
-      newErrors.phone = "Enter a valid 10-digit mobile number";
+    } else if (!/^\+?[0-9\s\-()]{7,20}$/.test(formData.phone.trim())) {
+      newErrors.phone = "Please enter a valid phone number";
     }
 
     // Tour
@@ -99,18 +101,21 @@ function Hero({ initialTour = "" }) {
     setSubmitted(false);
 
     try {
-      const response = await fetch(`${API_BASE}/api/enquiries`, {
+      const response = await fetch(`${API_BASE_URL}/api/enquiries`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) throw new Error("Enquiry could not be sent");
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        throw new Error(result.message || "Enquiry could not be sent");
+      }
 
       setSubmitted(true);
       setFormData({ name: "", email: "", phone: "", tour: initialTour, date: "", travelers: "" });
-    } catch {
-      setSubmitError("Unable to send your enquiry. Please try again.");
+    } catch (error) {
+      setSubmitError(error.message || "Unable to send your enquiry. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -122,7 +127,7 @@ function Hero({ initialTour = "" }) {
   return (
     <section id="enquiry"
       className="hero-section"
-      style={{ backgroundImage: `url(${heroImage})` }}
+      style={{ backgroundImage: `url(${getImageUrl(heroImage)})` }}
     >
       <div className="hero-overlay"></div>
 
@@ -210,10 +215,10 @@ function Hero({ initialTour = "" }) {
                 type="tel"
                 name="phone"
                 placeholder="Phone Number"
-                maxLength="10"
+                maxLength="20"
                 value={formData.phone}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/\D/g, "");
+                  const value = e.target.value.replace(/[^0-9+\s\-()]/g, "");
 
                   setFormData((prev) => ({
                     ...prev,

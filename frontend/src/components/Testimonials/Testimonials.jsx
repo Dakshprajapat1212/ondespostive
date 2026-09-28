@@ -2,6 +2,7 @@ import "./Testimonials.css";
 import testimonial1 from "../../assets/Testimonial1.png"
 import testimonial2 from "../../assets/Testimonial2.png"
 import testimonial3 from "../../assets/Testimonial3.png"
+import { getImageUrl } from "../../utils/imageDelivery";
 
 function Testimonials() {
   const testimonials = [
@@ -45,7 +46,7 @@ function Testimonials() {
                 <div className="testimonial-card" key={index}>
 
                   <div className="testimonial-user">
-                    <img src={item.image} alt={item.name} />
+                    <img src={getImageUrl(item.image)} alt={item.name} />
 
                     <div className="verified-icon">
                       ✓

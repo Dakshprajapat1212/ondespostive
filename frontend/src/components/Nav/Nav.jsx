@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import "./Nav.css";
 import logo from "../../assets/logo.png"
+import { getImageUrl } from "../../utils/imageDelivery";
 
 function Navbar() {
   return (
@@ -19,7 +20,7 @@ function Navbar() {
     <nav className="navbar">
       
       <Link to="/" className="brand">
-        <img src={logo} alt="Ondes Positive India Vacation" />
+        <img src={getImageUrl(logo)} alt="Ondes Positive India Vacation" />
 
         <div className="brand-text">
           <span className="brand-name">Ondes Positive</span>

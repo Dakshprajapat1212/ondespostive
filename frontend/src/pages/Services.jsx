@@ -9,7 +9,7 @@ function Services() {
       <div className="vehicle-grid">
         {vehicles.map((vehicle) => (
           <Link className="vehicle-card" to={`/services/${vehicle.slug}`} key={vehicle.slug}>
-            <img src={vehicle.image} alt={vehicle.name} />
+            <img src={vehicle.image} alt={vehicle.name} loading="lazy" decoding="async" />
             <div><span>{vehicle.feature}</span><h2>{vehicle.name}</h2><p>{vehicle.seats}</p><b>View vehicle details →</b></div>
           </Link>
         ))}

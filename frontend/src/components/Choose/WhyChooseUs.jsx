@@ -6,6 +6,7 @@ import Ertiga from "../../assets/Ertiga.png"
 import Etios from "../../assets/Etios.png"
 import TempoTraveller from "../../assets/TempoTraveller.png"
 import LuxuryCars from "../../assets/LuxuryCars.png"
+import { getImageUrl } from "../../utils/imageDelivery";
 const features = [
   {
     icon: "♙",
@@ -131,8 +132,10 @@ function WhyChooseUs() {
 
               <div className="vehicle-image">
                 <img
-                  src={vehicle.image}
+                  src={getImageUrl(vehicle.image)}
                   alt={vehicle.title}
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
 

@@ -12,7 +12,7 @@ function TravelDetail() {
 
   return (
     <main className="detail-page">
-      <div className="detail-visual"><img src={item.image} alt={item.name} /></div>
+      <div className="detail-visual"><img src={item.image} alt={item.name} decoding="async" /></div>
       <article className="detail-copy">
         <span className="detail-kicker">ONDES POSITIVE INDIA VACATION</span>
         <h1>{item.name}</h1>

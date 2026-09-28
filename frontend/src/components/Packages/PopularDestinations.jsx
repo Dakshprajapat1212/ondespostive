@@ -1,5 +1,4 @@
 import "./PopularDestinations.css";
-import { API_BASE } from "../../config/api";
 import delhi from "../../assets/Delhi.png";
 import udaipur from "../../assets/Udaipur.png";
 import jaisalmer from "../../assets/Jaisalmer.png";
@@ -12,6 +11,9 @@ import luxuaryRajasthan from "../../assets/LuxuaryRajasthan.png"
 import desertSafari from "../../assets/DesertSafari.png"
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getImageUrl } from "../../utils/imageDelivery";
+
+const API_BASE_URL = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 
 const images = { delhi, agra, jaipur, jodhpur, udaipur, jaisalmer, goldenTriangle, royalRajasthan, luxuaryRajasthan, desertSafari };
 
@@ -31,7 +33,7 @@ const fallbackPackages = [
   { name: "Desert Safari Tour", places: "Jaisalmer - Bikaner - Camel Safari", duration: "6 Days / 5 Nights", feature: "Adventure", description: "Meet the desert with dunes, folk music, camel rides and peaceful nights under the stars.", imageKey: "desertSafari" },
 ];
 
-const withImages = (items) => items.map((item) => ({ ...item, image: images[item.imageKey] }));
+const withImages = (items) => items.map((item) => ({ ...item, image: getImageUrl(images[item.imageKey]) }));
 
 function PopularDestinations() {
   const [destinations, setDestinations] = useState(withImages(fallbackDestinations));
@@ -39,7 +41,7 @@ function PopularDestinations() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/content`)
+    fetch(`${API_BASE_URL}/api/content`)
       .then((response) => {
         if (!response.ok) throw new Error("Content could not be loaded");
         return response.json();
@@ -68,7 +70,7 @@ function PopularDestinations() {
         {destinations.map((destination, index) => (
           <Link className="destination-card" key={index} to={`/destinations/${destination.name.toLowerCase()}`}>
             <div className="destination-image">
-              <img src={destination.image} alt={destination.name} />
+              <img src={destination.image} alt={destination.name} loading="lazy" decoding="async" />
             </div>
 
             <div className="destination-content">
@@ -104,7 +106,7 @@ function PopularDestinations() {
                 <span className="popular-badge">Most Popular</span>
               )}
 
-              <img src={pkg.image} alt={pkg.name} />
+              <img src={pkg.image} alt={pkg.name} loading="lazy" decoding="async" />
             </div>
 
             <div className="package-content">
