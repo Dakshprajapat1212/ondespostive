@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Hero.css";
-import heroImage from "../../assets/Hero.jpeg"; // apni image yaha laga dena
+import heroImage from "../../assets/Hero.webp";
 import { getImageUrl } from "../../utils/imageDelivery";
 
 const API_BASE_URL = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
@@ -42,10 +42,10 @@ function Hero({ initialTour = "" }) {
     // Name
     if (!formData.name.trim()) {
       newErrors.name = "Please enter your name";
-    } else if (formData.name.trim().length < 2) {
-      newErrors.name = "Name must be at least 2 characters";
-    } else if (!/^[A-Za-z\u00C0-\u024F\s'-]+$/.test(formData.name.trim())) {
-      newErrors.name = "Please enter a valid name";
+    } else if (formData.name.trim().length < 3) {
+      newErrors.name = "Name must be at least 3 characters";
+    } else if (!/^[A-Za-z\s]+$/.test(formData.name.trim())) {
+      newErrors.name = "Name can contain letters only";
     }
 
     // Email
@@ -53,7 +53,7 @@ function Hero({ initialTour = "" }) {
       newErrors.email = "Please enter your email";
     } else if (
       !/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(
-        formData.email.trim()
+        formData.email
       )
     ) {
       newErrors.email = "Please enter a valid email address";
@@ -62,8 +62,8 @@ function Hero({ initialTour = "" }) {
     // Phone
     if (!formData.phone.trim()) {
       newErrors.phone = "Please enter your phone number";
-    } else if (!/^\+?[0-9\s\-()]{7,20}$/.test(formData.phone.trim())) {
-      newErrors.phone = "Please enter a valid phone number";
+    } else if (!/^[6-9]\d{9}$/.test(formData.phone)) {
+      newErrors.phone = "Enter a valid 10-digit mobile number";
     }
 
     // Tour
@@ -215,10 +215,10 @@ function Hero({ initialTour = "" }) {
                 type="tel"
                 name="phone"
                 placeholder="Phone Number"
-                maxLength="20"
+                maxLength="10"
                 value={formData.phone}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/[^0-9+\s\-()]/g, "");
+                  const value = e.target.value.replace(/\D/g, "");
 
                   setFormData((prev) => ({
                     ...prev,

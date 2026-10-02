@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import "./WhyChooseUs.css";
-import Crysta from "../../assets/Crysta.png"
-import Hycross from "../../assets/Highcross.png"
-import Ertiga from "../../assets/Ertiga.png"
-import Etios from "../../assets/Etios.png"
-import TempoTraveller from "../../assets/TempoTraveller.png"
-import LuxuryCars from "../../assets/LuxuryCars.png"
+import Crysta from "../../assets/Crysta.webp"
+import Hycross from "../../assets/Highcross.webp"
+import Ertiga from "../../assets/Ertiga.webp"
+import Etios from "../../assets/Etios.webp"
+import TempoTraveller from "../../assets/TempoTraveller.webp"
+import LuxuryCars from "../../assets/LuxuryCars.webp"
 import { getImageUrl } from "../../utils/imageDelivery";
 const features = [
   {

@@ -1,7 +1,7 @@
 import "./Testimonials.css";
-import testimonial1 from "../../assets/Testimonial1.png"
-import testimonial2 from "../../assets/Testimonial2.png"
-import testimonial3 from "../../assets/Testimonial3.png"
+import testimonial1 from "../../assets/Testimonial1.webp"
+import testimonial2 from "../../assets/Testimonial2.webp"
+import testimonial3 from "../../assets/Testimonial3.webp"
 import { getImageUrl } from "../../utils/imageDelivery";
 
 function Testimonials() {
@@ -46,7 +46,7 @@ function Testimonials() {
                 <div className="testimonial-card" key={index}>
 
                   <div className="testimonial-user">
-                    <img src={getImageUrl(item.image)} alt={item.name} />
+                    <img src={getImageUrl(item.image)} alt={item.name} loading="lazy" decoding="async" />
 
                     <div className="verified-icon">
                       ✓

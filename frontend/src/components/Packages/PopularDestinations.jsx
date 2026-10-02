@@ -1,14 +1,14 @@
 import "./PopularDestinations.css";
-import delhi from "../../assets/Delhi.png";
-import udaipur from "../../assets/Udaipur.png";
-import jaisalmer from "../../assets/Jaisalmer.png";
-import jodhpur from "../../assets/Jodhpur.png";
-import jaipur from "../../assets/Jaipur.png";
-import agra from "../../assets/Agra.png";
-import goldenTriangle from "../../assets/GoldenTriangle.png"
-import royalRajasthan from "../../assets/RoyalRajasthan.png"
-import luxuaryRajasthan from "../../assets/LuxuaryRajasthan.png"
-import desertSafari from "../../assets/DesertSafari.png"
+import delhi from "../../assets/Delhi.webp";
+import udaipur from "../../assets/Udaipur.webp";
+import jaisalmer from "../../assets/Jaisalmer.webp";
+import jodhpur from "../../assets/Jodhpur.webp";
+import jaipur from "../../assets/Jaipur.webp";
+import agra from "../../assets/Agra.webp";
+import goldenTriangle from "../../assets/GoldenTriangle.webp"
+import royalRajasthan from "../../assets/RoyalRajasthan.webp"
+import luxuaryRajasthan from "../../assets/LuxuaryRajasthan.webp"
+import desertSafari from "../../assets/DesertSafari.webp"
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getImageUrl } from "../../utils/imageDelivery";

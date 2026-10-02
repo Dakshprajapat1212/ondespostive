@@ -2,9 +2,6 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
-import dns from "node:dns";
-
-dns.setDefaultResultOrder("ipv4first");
 
 dotenv.config();
 
@@ -31,23 +28,27 @@ const packages = [
 
 const adminEmail = process.env.ADMIN_EMAIL || "Ondespositiveindiavacation.in@gmail.com";
 const senderEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
-const smtpUser = process.env.SMTP_USER || "Ondespositiveindiavacation.in@gmail.com";
-const smtpPass = (process.env.SMTP_PASS || "qrlgppjhwvfpzsvz").replace(/\s+/g, "");
-
-const smtpTransporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "smtp.gmail.com",
-  port: Number(process.env.SMTP_PORT || 465),
-  secure: process.env.SMTP_SECURE !== "false",
-  auth: {
-    user: smtpUser,
-    pass: smtpPass,
-  },
-});
+const isProduction = process.env.NODE_ENV === "production" || Boolean(process.env.RENDER_SERVICE_ID) || Boolean(process.env.VERCEL);
+const smtpTransporter = !isProduction && process.env.SMTP_USER && process.env.SMTP_PASS
+  ? nodemailer.createTransport({
+      host: process.env.SMTP_HOST || "smtp.gmail.com",
+      port: Number(process.env.SMTP_PORT || 465),
+      secure: process.env.SMTP_SECURE !== "false",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    })
+  : null;
 
 async function sendEmail({ to, replyTo, subject, text }) {
+  if (!process.env.RESEND_API_KEY && !smtpTransporter) {
+    throw new Error("Production email is not configured. Set RESEND_API_KEY and RESEND_FROM_EMAIL.");
+  }
+
   if (!process.env.RESEND_API_KEY) {
     await smtpTransporter.sendMail({
-      from: `"Ondes Positive India Vacation" <${smtpUser}>`,
+      from: process.env.SMTP_USER,
       to,
       replyTo,
       subject,
@@ -109,17 +110,24 @@ app.post("/api/enquiries", async (req, res) => {
       text: enquiryDetails,
     });
 
-    await sendEmail({
-      to: email.trim(),
-      replyTo: adminEmail,
-      subject: "We received your India vacation enquiry",
-      text: `Hello ${name.trim()},\n\nThank you for contacting Ondes Positive India Vacation. We received your enquiry with these details:\n\n${enquiryDetails}\n\nOur travel team will contact you shortly.`,
-    });
+    try {
+      await sendEmail({
+        to: email.trim(),
+        replyTo: adminEmail,
+        subject: "We received your India vacation enquiry",
+        text: `Hello ${name.trim()},\n\nThank you for contacting Ondes Positive India Vacation. We received your enquiry with these details:\n\n${enquiryDetails}\n\nOur travel team will contact you shortly.`,
+      });
+    } catch (error) {
+      console.error("Customer confirmation email failed:", error.message);
+    }
 
     return res.status(201).json({ message: "Enquiry sent successfully." });
   } catch (error) {
     console.error("Enquiry processing failed:", error.message);
-    return res.status(500).json({ message: "Unable to process enquiry right now." });
+    const message = isProduction && !process.env.RESEND_API_KEY
+      ? "Email is not configured on the server yet. Please contact us by WhatsApp or phone."
+      : "Our email service is temporarily unavailable. Please contact us by WhatsApp or phone.";
+    return res.status(503).json({ message });
   }
 });
 
