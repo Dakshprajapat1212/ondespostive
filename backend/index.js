@@ -2,6 +2,9 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
+import dns from "node:dns";
+
+dns.setDefaultResultOrder("ipv4first");
 
 dotenv.config();
 
@@ -26,56 +29,56 @@ const packages = [
   { name: "Desert Safari Tour", places: "Jaisalmer - Bikaner - Camel Safari", duration: "6 Days / 5 Nights", feature: "Adventure", imageKey: "desertSafari" },
 ];
 
-const adminEmail = process.env.ADMIN_EMAIL || "Ondespositiveindiavacation.in@gmail.com";
-const senderEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
-const isProduction = process.env.NODE_ENV === "production" || Boolean(process.env.RENDER_SERVICE_ID) || Boolean(process.env.VERCEL);
-const smtpTransporter = !isProduction && process.env.SMTP_USER && process.env.SMTP_PASS
-  ? nodemailer.createTransport({
-      host: process.env.SMTP_HOST || "smtp.gmail.com",
-      port: Number(process.env.SMTP_PORT || 465),
-      secure: process.env.SMTP_SECURE !== "false",
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    })
-  : null;
+const adminEmail = (process.env.ADMIN_EMAIL && process.env.ADMIN_EMAIL.trim()) || "Ondespositiveindiavacation.in@gmail.com";
+const senderEmail = (process.env.RESEND_FROM_EMAIL && process.env.RESEND_FROM_EMAIL.trim()) || "onboarding@resend.dev";
+const smtpUser = (process.env.SMTP_USER && process.env.SMTP_USER.trim()) || "Ondespositiveindiavacation.in@gmail.com";
+const smtpPass = (process.env.SMTP_PASS && process.env.SMTP_PASS.trim())
+  ? process.env.SMTP_PASS.replace(/\s+/g, "")
+  : "qrlgppjhwvfpzsvz";
+
+const smtpTransporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || "smtp.gmail.com",
+  port: Number(process.env.SMTP_PORT || 465),
+  secure: process.env.SMTP_SECURE !== "false",
+  auth: {
+    user: smtpUser,
+    pass: smtpPass,
+  },
+});
 
 async function sendEmail({ to, replyTo, subject, text }) {
-  if (!process.env.RESEND_API_KEY && !smtpTransporter) {
-    throw new Error("Production email is not configured. Set RESEND_API_KEY and RESEND_FROM_EMAIL.");
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: senderEmail,
+          to: [to],
+          reply_to: replyTo,
+          subject,
+          text,
+        }),
+      });
+
+      if (response.ok) return;
+      const details = await response.text();
+      console.warn(`Resend API failed (${response.status}): ${details}. Falling back to Nodemailer SMTP.`);
+    } catch (resendErr) {
+      console.warn(`Resend API error: ${resendErr.message}. Falling back to Nodemailer SMTP.`);
+    }
   }
 
-  if (!process.env.RESEND_API_KEY) {
-    await smtpTransporter.sendMail({
-      from: process.env.SMTP_USER,
-      to,
-      replyTo,
-      subject,
-      text,
-    });
-    return;
-  }
-
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: senderEmail,
-      to: [to],
-      reply_to: replyTo,
-      subject,
-      text,
-    }),
+  await smtpTransporter.sendMail({
+    from: `"Ondes Positive India Vacation" <${smtpUser}>`,
+    to,
+    replyTo,
+    subject,
+    text,
   });
-
-  if (!response.ok) {
-    const details = await response.text();
-    throw new Error(`Email provider rejected the request (${response.status}): ${details}`);
-  }
 }
 
 app.get("/", (req, res) => {
@@ -124,10 +127,7 @@ app.post("/api/enquiries", async (req, res) => {
     return res.status(201).json({ message: "Enquiry sent successfully." });
   } catch (error) {
     console.error("Enquiry processing failed:", error.message);
-    const message = isProduction && !process.env.RESEND_API_KEY
-      ? "Email is not configured on the server yet. Please contact us by WhatsApp or phone."
-      : "Our email service is temporarily unavailable. Please contact us by WhatsApp or phone.";
-    return res.status(503).json({ message });
+    return res.status(500).json({ message: "Unable to process enquiry right now. Please try again or contact us directly." });
   }
 });
 
